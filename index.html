@@ -735,7 +735,7 @@ const st = { tab: "frec", met: ORDEN_METS[0], dpto: NAL, mpio: null, terr: "dep"
   lluPre: "12m", lluDesde: null, lluHasta: null, lluEv: null,
   modoL: "coro", ptDias: null, ptTodo: false,     // mapa Leaflet VIIRS: modo y período de puntos
   puntos: false, ptDesde: null, ptHasta: null, ptNivel: null, ptAjuste: false };   // overlay de puntos D3 (lluvia)
-const TABS = [["frec", "Frecuencia de incendios VIIRS"], ["wfs", "Frecuencia de incendios WFS"], ["area", "Área quemada", "MapBiomas"], ["lluvia", "Lluvia antecedente"], ["estr", "Estrategias de reducción"], ["cap", "Capacidades de respuesta"], ["ayuda", "Ayuda"]]
+const TABS = [["frec", "Frecuencia de incendios VIIRS"], ["wfs", "Frecuencia de incendios WFS"], ["area", "Área quemada", "MapBiomas"], ["lluvia", "Lluvia antecedente"], ["estr", "Estrategias GRD"], ["cap", "Capacidades de respuesta"], ["ayuda", "Ayuda"]]
   .filter(t => t[0] !== "lluvia" || LLUVIA);   // la pestaña Lluvia solo aparece si hay datos
 try { const s = JSON.parse(localStorage.getItem("incendios_v1_estado") || "{}");
   if (s.met && METS.includes(s.met)) st.met = s.met; if (s.mapa) st.mapa = s.mapa;
@@ -835,7 +835,7 @@ const SUBT = {
   wfs: "Detecciones diarias de incendios OroraTech WFS · octubre a mayo (desarrollo satelital WFS)",
   area: "Consulta complementaria · área quemada y cobertura afectada según MapBiomas Fuego (30 m, 2014–2025)",
   lluvia: "Lluvia CHIRPS en los 90 días antes de cada evento de incendio · por departamento y municipio",
-  estr: "Estrategias SRR–UNGRD de reducción del riesgo por incendios forestales · diagnóstico, prioridades y matriz por departamento y municipio",
+  estr: "Estrategias GRD SRR–UNGRD por incendios forestales · diagnóstico, prioridades y matriz por departamento y municipio",
   cap: "Matriz Nacional de Capacidades para la Atención de Incendios · SNGRD (DCC, Ejército Nacional, Policía Nacional - PONALSAR)",
   ayuda: "Manuales, videos y créditos del portal",
 };
@@ -2260,10 +2260,11 @@ function llNotas() {
   document.getElementById("lluNotas").innerHTML = `<h3>Fuentes y reglas de cálculo</h3><ul>
     <li><b>Qué es la «lluvia antecedente»:</b> para cada evento, la lluvia acumulada en los 90 días anteriores a su fecha. No es una cifra del primer ni del último evento: el período elegido arriba define qué eventos entran, y los indicadores resumen a todos (mediana). El bloque «Un evento en detalle» muestra uno solo.</li>
     <li><b>Lluvia: CHIRPS diario</b> (0,05°, unos 5 km), ${fechaTxt(L.fecha0)} a ${fechaTxt(L.chirps_hasta)}. Para cada municipio se promedia la lluvia de los píxeles con dato, ponderada por la fracción del píxel que cae dentro del municipio. En municipios grandes el promedio no describe un sitio puntual.</li>
+    <li><b>San Andrés, Providencia y Santa Catalina (88):</b> CHIRPS cubre solo tierra firme y no tiene píxeles con dato en las islas. Para San Andrés (88001) y Providencia (88564) la lluvia sale de las estaciones de precipitación diaria del IDEAM de cada isla (promedio de las estaciones con dato). Como esas series tienen vacíos, cada bloque de 10 días se escala por los días con dato (mínimo 5) y el normal exige al menos 6 años válidos de ${L.base[0]}–${L.base[1]}. Son pocos eventos (${fmt(((L.islas||{}).eventos)||0)}) y cada isla se representa con sus estaciones, no con una malla.</li>
     <li><b>Evento:</b> municipio y día con al menos un punto de calor VIIRS S-NPP sobre vegetación, con el mismo filtro de cobertura de la pestaña Frecuencia. Un incendio de varios días cuenta una vez por día.</li>
     <li><b>Ventana:</b> 90 días antes del evento, de t−90 a t−1 (el día del evento no entra), en 9 bloques de 10 días.</li>
     <li><b>Normal:</b> promedio del mismo acumulado en la misma fecha calendario de ${L.base[0]}–${L.base[1]}; el 29 de febrero usa el promedio del 28 de febrero y el 1 de marzo. Así se compara cada evento con lo esperado en su época del año. Si el normal es menor de ${L.normal_min_mm} mm no se calcula el porcentaje (queda solo en mm).</li>
-    <li><b>Alcance:</b> hay ${fmt(L.eventos_analizados)} de ${fmt(L.eventos_total)} eventos-día analizables. Quedan fuera los de antes del 1 de abril de 2014 y los posteriores al último día CHIRPS (${fechaTxt(L.chirps_hasta)}), porque no tienen los 90 días completos, y los de municipios sin píxel CHIRPS con dato (San Andrés y Providencia).</li>
+    <li><b>Alcance:</b> hay ${fmt(L.eventos_analizados)} de ${fmt(L.eventos_total)} eventos-día analizables. Quedan fuera los de antes del 1 de abril de 2014 y los posteriores al último día CHIRPS (${fechaTxt(L.chirps_hasta)}), porque no tienen los 90 días completos,.</li>
     <li><b>Déficit:</b> evento con menos del ${L.deficit_pct} % de la lluvia normal. Los mapas pintan en gris los municipios con menos de ${L.min_eventos_mapa} eventos-día en el período.</li>
     <li>Esta pestaña describe la lluvia que precedió a los incendios; no demuestra causalidad. Los puntos de calor no equivalen a incendios (ver Frecuencia).</li></ul>
     <p style="margin:8px 0 0">Generado ${L.generado}.</p>`;

@@ -1,6 +1,6 @@
 /* ============================================================================
- *  Estrategias de reducción del riesgo por incendios forestales (SRR · UNGRD)
- *  Pestaña «Estrategias de reducción» + fichas descargables (PDF) por municipio
+ *  Estrategias GRD por incendios forestales (SRR · UNGRD)
+ *  Pestaña «Estrategias GRD» + fichas descargables (PDF) por municipio
  *  y departamento.
  *
  *  Catálogo:     data/estrategias/estrategias_incendios.json
@@ -309,7 +309,7 @@
     const yo = ++token;
     if (!CAT) { pane.innerHTML = `<section class="card sec"><p class="desc">Cargando estrategias…</p></section>`; await catalogo(); }
     if (yo !== token) return;
-    if (!CAT) { pane.innerHTML = `<section class="card sec"><h3>Estrategias de reducción</h3><p class="desc">No se pudo leer <code>${RUTA}</code>. Genere el archivo con <code>python herramientas/estrategias_a_json.py</code>.</p></section>`; return; }
+    if (!CAT) { pane.innerHTML = `<section class="card sec"><h3>Estrategias GRD</h3><p class="desc">No se pudo leer <code>${RUTA}</code>. Genere el archivo con <code>python herramientas/estrategias_a_json.py</code>.</p></section>`; return; }
     const { st, NAL } = ctx;
     const cod = st.mpio || (st.dpto !== NAL ? st.dpto : null);
     const tipo = st.mpio ? "mun" : (st.dpto !== NAL ? "dep" : "nal");
@@ -490,7 +490,7 @@
     fuente("bold", 8, AZUL); T("UNGRD · SUBDIRECCIÓN PARA LA REDUCCIÓN DEL RIESGO", PW - MG, 10, { align: "right" });
     fuente("normal", 7.5, GRIS); T("Escenarios Incendios Forestales y Capacidades del SNGRD · Fenómeno El Niño 2026–2027", PW - MG, 14, { align: "right" });
     y = 30;
-    fuente("bold", 9, NAR); T(`${titulo} DE REDUCCIÓN DEL RIESGO POR INCENDIOS FORESTALES`, MG, y); y += 8;
+    fuente("bold", 9, NAR); T(`${titulo} DE ESTRATEGIAS GRD POR INCENDIOS FORESTALES`, MG, y); y += 8;
     let tz = 20; fuente("bold", tz, AZUL); while (tz > 13 && doc.getTextWidth(pdfTxt(lugar)) > CW) { tz -= 1; doc.setFontSize(tz); }
     const tl = doc.splitTextToSize(pdfTxt(lugar), CW); doc.text(tl, MG, y); y += (tl.length - 1) * tz * 0.42 + 5.5;
     fuente("normal", 8.2, GRIS);
@@ -537,7 +537,7 @@
       if (!P.pico.some(Boolean)) { fuente("italic", 8, GRIS); T("Sin registros suficientes para definir una temporada; aplique el calendario departamental.", MG, y); y += 5; }
     } else {
       fuente("normal", 9, TINTA);
-      y = parrafo(`Catálogo de las ${CAT.meta.n} estrategias de reducción del riesgo por incendios forestales elaboradas por la Subdirección para la Reducción del Riesgo de la UNGRD, organizadas por proceso de la Ley 1523 de 2012. Para una ficha con diagnóstico y prioridades, elija un departamento o un municipio en el portal.`, MG, y, CW, 4.2) + 4;
+      y = parrafo(`Catálogo de las ${CAT.meta.n} estrategias GRD por incendios forestales elaboradas por la Subdirección para la Reducción del Riesgo de la UNGRD, organizadas por proceso de la Ley 1523 de 2012. Para una ficha con diagnóstico y prioridades, elija un departamento o un municipio en el portal.`, MG, y, CW, 4.2) + 4;
     }
 
     // ---- por qué
@@ -614,7 +614,7 @@
       doc.setPage(p);
       doc.setDrawColor(217, 222, 233); doc.setLineWidth(0.2); doc.line(MG, PH - 12, PW - MG, PH - 12);
       fuente("normal", 6.5, GRIS);
-      T(`${titulo.charAt(0) + titulo.slice(1).toLowerCase()} · ${lugar} · Estrategias SRR-UNGRD para incendios forestales`, MG, PH - 8);
+      T(`${titulo.charAt(0) + titulo.slice(1).toLowerCase()} · ${lugar} · Estrategias GRD SRR-UNGRD para incendios forestales`, MG, PH - 8);
       fuente("bold", 6.5, ROJO); T("VERSIÓN DE PREPRODUCCIÓN Y DESARROLLO · Oficial: scr-ungrd.github.io/escenarios-incendios-sngrd", MG, PH - 5);
       T(`Página ${p} de ${np}`, PW - MG, PH - 8, { align: "right" });
       if (p > 1) { fuente("bold", 7, AZUL); T(lugar, PW - MG, 8, { align: "right" }); }
