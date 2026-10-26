@@ -33,7 +33,7 @@ HTML el navegador bloquea la lectura de datos (`fetch`), por eso se sirve por HT
 
 En los mapas D3 (Lluvia, Estrategias GRD, Área) **San Andrés** aparece en un **recuadro (inset)** arriba-izquierda, ya que las islas están lejos del continente.
 
-Cada pestaña tiene un **asistente de IA** flotante (ahora **analiza y compara cifras** de todas las pestañas, ver §4) y un botón **⤓ Reporte PDF**.
+Cada pestaña tiene un **asistente de IA** flotante (ahora **analiza y compara cifras** de todas las pestañas, ver §4) y un botón **⤓ Reporte PDF**. En el **pie** de la página se muestra un **contador de visitas** («👁 Visitas totales: N») con Firebase Firestore; la `firebaseConfig` (pública) se pone en `config.js` y no cuenta en localhost.
 
 ## 3. Archivos y datos
 

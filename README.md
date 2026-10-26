@@ -25,7 +25,7 @@ Tablero que unifica seis módulos de análisis de incendios para Colombia:
 | **Estrategias GRD** | Estrategias SRR–UNGRD por territorio: mapa + matriz de medidas + diagnóstico, catálogo y fichas PDF | `index.html` + `estrategias.js` (nativo) |
 | **Capacidades de respuesta** | Matriz Nacional de Capacidades SNGRD | `capacidades_sngrd.html` (iframe, datos embebidos) |
 
-Los mapas D3 muestran **San Andrés** en un recuadro (inset). Incluye además un **asistente de IA** flotante que **calcula y compara cifras** de todas las pestañas (`asistente_datos.js`) y **Reporte PDF** (captura la vista actual).
+Los mapas D3 muestran **San Andrés** en un recuadro (inset). Incluye además un **asistente de IA** flotante que **calcula y compara cifras** de todas las pestañas (`asistente_datos.js`), **Reporte PDF** (captura la vista actual) y un **contador de visitas** en el pie (Firebase Firestore; la `firebaseConfig` pública se pone en `config.js` → `window.FIREBASE_CONFIG`, no cuenta en localhost).
 
 ## B. Cómo funciona
 

@@ -23,6 +23,22 @@
 //
 window.ASISTENTE_URL = "https://asistente-ungrd.jorge-alpala-1987.workers.dev/api/asistente";
 
+// ── Contador de visitas (Firebase Firestore) ────────────────────────────────
+// Contador de visitas del portal. Como GitHub Pages es estático, el total se guarda en
+// Cloud Firestore (plan gratuito Spark) y suma 1 en cada carga. Pegue aquí la firebaseConfig
+// de su proyecto (Firebase → Configuración del proyecto → Tus apps → Web </>).
+// La firebaseConfig es PÚBLICA por diseño (identifica el proyecto, NO es un secreto); la
+// seguridad la dan las reglas de Firestore. Mientras queden valores "TU_..." el contador
+// NO se muestra. No cuenta en localhost. Guía: Guia_Contador_Visitas_Firebase.
+window.FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyBD940tLZzwSGQsX5XHzKY9pxi4ZCEcwzs",
+  authDomain:        "escenarios-incendios-sngrd.firebaseapp.com",
+  projectId:         "escenarios-incendios-sngrd",
+  storageBucket:     "escenarios-incendios-sngrd.firebasestorage.app",
+  messagingSenderId: "787813249790",
+  appId:             "1:787813249790:web:8bef0d1383046cc7106baf"
+};
+
 // ── Acceso temporal (vista previa para la mesa directiva) ────────────────────
 // Contraseña para entrar al portal.
 //   • Con texto  → el portal pide contraseña antes de mostrarse.

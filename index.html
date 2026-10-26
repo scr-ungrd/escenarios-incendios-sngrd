@@ -142,6 +142,9 @@ tr.clic{cursor:pointer} tr.clic:hover td{background:var(--surface-2)} tr.clic.se
 .inset-sa{cursor:pointer}
 .inset-sa:hover rect,.inset-sa:focus rect{stroke:var(--ink);stroke-width:1.5}
 .inset-sa:focus{outline:none}
+#site-footer{text-align:center;padding:10px 16px 18px;font-size:12px;color:var(--ink-3)}
+#site-footer #visitas{font:600 12px var(--f-mono);color:var(--ink-2)}
+@media print{#site-footer{display:none}}
 .gridl{stroke:var(--grid);stroke-width:1}
 .base{stroke:var(--line);stroke-width:1}
 .yr{fill:none;stroke-width:1.2;stroke-linejoin:round;stroke-linecap:round;transition:opacity .12s}
@@ -655,6 +658,9 @@ header.top{border-bottom:3px solid var(--azul);padding-bottom:10px;margin-bottom
     <p><b>Realizado por:</b> UNGRD.</p>
     <p>Herramienta de apoyo al conocimiento del riesgo en el marco de la Ley 1523 de 2012. No reemplaza las alertas oficiales del IDEAM, el SGC ni la UNGRD.</p>
   </div>
+
+  <!-- Pie visible en pantalla: contador de visitas (oculto hasta que Firebase responda) -->
+  <footer id="site-footer" hidden><span id="visitas"></span></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -2998,4 +3004,39 @@ window.AS_CTX = { st, DATOS, M, TABS, NAL, GEO_DEP, GEO_MUN, MUN_NOM, nomDepto, 
   panel.onkeydown = e => { if (e.key === "Escape") abrir(false); };
   document.getElementById("tabs")?.addEventListener("click", () => { if (!panel.hidden) setTimeout(sugerencias, 0); });
 })();
+</script>
+
+<!-- ============ CONTADOR DE VISITAS (Firebase Firestore) ============ -->
+<!-- La configuración va en config.js (window.FIREBASE_CONFIG). La firebaseConfig es PÚBLICA por diseño
+     (identifica el proyecto, no es un secreto); la seguridad la dan las reglas de Firestore. Modelo:
+     documento contadores/visitas con un campo numérico "total" (+1 por carga, transacción atómica).
+     No cuenta en localhost. Mientras config.js tenga valores "TU_..." el contador no se muestra.
+     Guía: Guia_Contador_Visitas_Firebase (crear proyecto Firebase → Firestore + reglas → pegar config). -->
+<script type="module">
+  (async () => {
+    const cfg = window.FIREBASE_CONFIG, el = document.getElementById("visitas");
+    if (!el || !cfg || !cfg.projectId || !cfg.apiKey || /TU_|AIza\.\.\.|xxxx|example/i.test((cfg.apiKey || "") + (cfg.appId || ""))) return;   // sin configurar → no se muestra
+    const h = location.hostname;
+    const esLocal = location.protocol === "file:" || h === "localhost" || h === "127.0.0.1" || h === "[::1]" || h.endsWith(".local");
+    try {
+      const V = "10.14.1";
+      const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
+      const { getFirestore, doc, getDoc, runTransaction } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
+      const db = getFirestore(initializeApp(cfg));
+      const ref = doc(db, "contadores", "visitas");
+      let total;
+      if (esLocal) {                                   // en local NO cuenta: solo lee para mostrar
+        const s = await getDoc(ref); total = s.exists() ? (s.data().total || 0) : 0;
+      } else {
+        total = await runTransaction(db, async (t) => {
+          const s = await t.get(ref);
+          const n = s.exists() ? (s.data().total || 0) + 1 : 1;
+          t.set(ref, { total: n });                    // create (total=1) o update (+1): ambos permitidos por las reglas
+          return n;
+        });
+      }
+      el.textContent = "👁 Visitas totales: " + Number(total).toLocaleString("es-CO");
+      document.getElementById("site-footer").hidden = false;
+    } catch (e) { /* silencioso: si Firebase no está disponible, no se muestra el contador */ }
+  })();
 </script>
